@@ -48,7 +48,7 @@ body {
             box-shadow: 0 0 8px rgba(139, 69, 19, 0.4);
             border-color: #8b4513;
         }
-        .btn-primary {
+         .btn-primary {
             background: linear-gradient(45deg, #8b4513, #a0522d);
             border: none;
             border-radius: 10px;
@@ -78,6 +78,28 @@ body {
         .btn-primary:active::after {
             width: 200px;
             height: 200px;
+        }
+        .btn-google {
+            background: #fff;
+            border: 1px solid #d2b48c;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #4a2c0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .btn-google:hover {
+            transform: scale(1.05);
+            background: #f8f1e9;
+        }
+        .btn-google img {
+            width: 24px;
+            margin-right: 10px;
         }
         .nav-link {
             color: #8b4513;
@@ -140,6 +162,7 @@ body {
         .form-section {
             display: none;
         }
+        
         .form-section.active {
             display: block;
         }

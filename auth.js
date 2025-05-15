@@ -2,6 +2,8 @@ import { signUp } from "./firebase.js";
 
 import { loginUser } from "./firebase.js";
 
+import { signInWithGoogle } from "./firebase.js";
+
         
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
@@ -13,6 +15,8 @@ import { loginUser } from "./firebase.js";
         const registerEmail = document.getElementById('register-email');
         const registerPassword = document.getElementById('register-password');
         const registerError = document.getElementById('register-error');
+
+        
 
         // Login form submission
         loginForm.addEventListener('submit', (e) => {
@@ -77,3 +81,11 @@ import { loginUser } from "./firebase.js";
 
         signUp(email, password, name); 
 });
+
+//=========================================================================================================
+
+    const googleSignInBtn = document.getElementById('google-signin-btn');
+    const googleSignUpBtn = document.getElementById('google-signup-btn');
+
+if (googleSignInBtn) googleSignInBtn.addEventListener('click', signInWithGoogle);
+if (googleSignUpBtn) googleSignUpBtn.addEventListener('click', signInWithGoogle);
