@@ -200,8 +200,8 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h4 class="text-center mb-4">Admin Panel</h4>
-    <a href="#" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <!-- <h4 class="text-center mb-4">Admin Panel</h4> -->
+    <h5 class="mb-5 mt-3"><i class="fas fa-tachometer-alt mx-2"></i> Admin Panel</h5>
     <a href="#" class="nav-item"  id="show-insert"><i class="fas fa-plus"></i> Insert Books</a>
     <a href="#" class="nav-item"  id="show-view"><i class="fas fa-eye"></i> View Books</a>
     <a href="#" class="nav-item" id="sign-out-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
@@ -209,12 +209,12 @@
 
   <!-- Main Content -->
   <div class="content" id="content">
+
+
+     <!-- insert book -->
       <div id="insert-section" class="content-section">
-
     <h2 class="form-title" >Insert Book</h2>
-
     <div id="alert-box"></div>
-
     <form id="add-book-form">
       <div class="form-group mb-3">
         <label for="book-title">Title</label>
@@ -271,7 +271,7 @@
 
 
 
-  
+  <!-- view books -->
     <div id="view-section" class="content-section" style="display: none;">
       <h2 class="form-title">All Books</h2>
       
@@ -298,7 +298,9 @@
     </div>
 </div>
 
-  <!-- Edit Modal -->
+
+
+  <!-- edit Modal -->
 <div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -349,7 +351,7 @@
 </div>
 
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -370,8 +372,6 @@
   </div>
 
 
-
-  
 
   <!-- Toggle Sidebar Button (Mobile) -->
   <button class="toggle-btn d-md-none" id="toggleBtn"><i class="fas fa-bars"></i></button>
