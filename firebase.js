@@ -94,34 +94,34 @@ export async function signInWithGoogle() {
 
 
 
-// export async function addBook(bookData) {
-//   try {
-//     const docRef = await addDoc(collection(db, "books"), bookData);
-//     return { success: true, id: docRef.id };
-//   } catch (error) {
-//     return { success: false, error };
-//   }
-// }
-
-export async function addBook(bookData, imageFile) {
+export async function addBook(bookData) {
   try {
-    const docRef = await addDoc(collection(db, "books"), {
-      ...bookData,
-      createdAt: new Date()
-    });
-
-    const imageRef = ref(storage, `bookImages/${docRef.id}_${imageFile.name}`);
-    await uploadBytes(imageRef, imageFile);
-    const imageUrl = await getDownloadURL(imageRef);
-
-    await addDoc(collection(db, "images"), {
-      bookId: docRef.id,
-      imageUrl,
-      uploadedAt: new Date()
-    });
-
-    return { success: true, id: docRef.id, imageUrl };
+    const docRef = await addDoc(collection(db, "books"), bookData);
+    return { success: true, id: docRef.id };
   } catch (error) {
     return { success: false, error };
   }
 }
+
+// export async function addBook(bookData, imageFile) {
+//   try {
+//     const docRef = await addDoc(collection(db, "books"), {
+//       ...bookData,
+//       createdAt: new Date()
+//     });
+
+//     const imageRef = ref(storage, `bookImages/${docRef.id}_${imageFile.name}`);
+//     await uploadBytes(imageRef, imageFile);
+//     const imageUrl = await getDownloadURL(imageRef);
+
+//     await addDoc(collection(db, "images"), {
+//       bookId: docRef.id,
+//       imageUrl,
+//       uploadedAt: new Date()
+//     });
+
+//     return { success: true, id: docRef.id, imageUrl };
+//   } catch (error) {
+//     return { success: false, error };
+//   }
+// }

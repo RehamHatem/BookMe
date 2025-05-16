@@ -43,6 +43,34 @@ imageInput.addEventListener("change", () => {
 
 //=======================================================================================
 
+  const insertSection = document.getElementById("insert-section");
+  const viewSection = document.getElementById("view-section");
+
+  const showInsertBtn = document.getElementById("show-insert");
+  const showViewBtn = document.getElementById("show-view");
+
+  const navItems = document.querySelectorAll(".nav-item");
+  function setActive(el) {
+    navItems.forEach(item => item.classList.remove("active"));
+    el.classList.add("active");
+  }
+
+  showInsertBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    insertSection.style.display = "block";
+    viewSection.style.display = "none";
+    setActive(showInsertBtn);
+  });
+
+  showViewBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    insertSection.style.display = "none";
+    viewSection.style.display = "block";
+    setActive(showViewBtn);
+  });
+
+
+//=======================================================================================
 //  form 
 addBookForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -54,6 +82,9 @@ addBookForm.addEventListener("submit", async (e) => {
     const description = document.getElementById("book-description").value.trim();
     const category = categorySelect.value;
     const imageFile = imageInput.files[0];
+    const timestamp = Date.now();
+    const bookId = `${title.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
+
 
 // Validate 
     if (!title || title.length < 5) return showAlert("Title must be at least 5 characters.", "danger");
@@ -66,6 +97,7 @@ addBookForm.addEventListener("submit", async (e) => {
 
 // book data
     const bookData = {
+    bookId, 
     title,
     author,
     category,
@@ -75,7 +107,7 @@ addBookForm.addEventListener("submit", async (e) => {
     };
 
     //add to Firebase
-    const result = await addBook(bookData, imageFile);
+    const result = await addBook(bookData);
 
     if (result.success) {
     showAlert(`Book added successfully! ID: ${result.id}`, "success");
