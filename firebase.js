@@ -58,8 +58,8 @@ try {
 
 //with google 
 const provider = new GoogleAuthProvider();
-
-export async function signInWithGoogle() {
+//signup
+export async function signUpWithGoogle() {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
@@ -77,6 +77,32 @@ export async function signInWithGoogle() {
       alert(`Welcome new user: ${user.displayName}`);
       window.location.href = "index.html"; 
     } else {
+      alert(`this email already exists}`);
+      window.location.href = "index.html"; 
+    }
+
+  } catch (error) {
+    alert("Google Sign-In error: " + error.message);
+  }
+}
+//signin
+export async function signInWithGoogle() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      
+      alert("Please sign up before signing in with this email.");
+      
+    
+      await signOut(auth);
+      return;
+    } 
+    else {
       alert(`Welcome back: ${user.displayName}`);
       if(user.email=="rha772201@gmail.com"){
       window.location.href = "dashboard.html";   
