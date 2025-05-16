@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
-import { getFirestore, collection, addDoc ,setDoc, getDoc ,doc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+import { getFirestore, collection, getDocs,addDoc ,setDoc, getDoc ,doc, deleteDoc, updateDoc  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { GoogleAuthProvider , signInWithPopup } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
@@ -125,3 +125,39 @@ export async function addBook(bookData) {
 //     return { success: false, error };
 //   }
 // }
+
+
+//==================================================================================
+//get books
+export async function getBooks() {
+  try {
+    const booksSnapshot = await getDocs(collection(db, "books"));
+    const books = [];
+    booksSnapshot.forEach(doc => {
+      books.push({ id: doc.id, ...doc.data() });
+    });
+    return { success: true, books };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+
+//========================================================================================
+//delete book
+export async function deleteBook(bookId) {
+  const docRef = doc(db, "books", bookId);
+  await deleteDoc(docRef);
+}
+
+//=========================================================================================
+//update book
+export async function updateBook(bookId, updatedData)  {
+  try {
+    const bookRef = doc(db, "books", bookId); 
+    await updateDoc(bookRef, updatedData);
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating book:", error);
+    return { success: false, error };
+  }
+};
