@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
 import { getFirestore, collection, getDocs,addDoc ,setDoc, getDoc ,doc, deleteDoc, updateDoc  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import { getAuth, signOut,createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { GoogleAuthProvider , signInWithPopup } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import {getStorage, ref, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
@@ -161,3 +161,16 @@ export async function updateBook(bookId, updatedData)  {
     return { success: false, error };
   }
 };
+
+//==========================================================================================
+//sign out
+
+export async function signOutUser() {
+  try {
+    await signOut(auth);
+    console.log("User signed out successfully.");
+  } catch (error) {
+    console.error("Sign-out error:", error);
+    throw error; 
+  }
+}

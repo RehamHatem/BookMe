@@ -4,7 +4,7 @@ import {  getBooks } from './firebase.js';
 import {  deleteBook } from './firebase.js';
 
 import {  updateBook } from './firebase.js';
-
+import { signOutUser } from './firebase.js'; 
 
 document.addEventListener("DOMContentLoaded", () => {
 const content = document.getElementById("content");
@@ -227,10 +227,8 @@ async function renderBooksTable() {
         deleteModal.hide();
     });
 
-//========================================================================================
-
 }
-
+// cancel edit
 document.getElementById('edit-cancel').addEventListener('click', async () => {
     const editModal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
     editModal.hide();
@@ -258,6 +256,20 @@ document.getElementById('save-book-changes').addEventListener('click', async () 
     return showAlertTable("Error updating book: " + error.message, "danger", "books-table-alert");
     }
 });
+
+//==================================================================
+//signout
+document.getElementById("sign-out-btn").addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+    await signOutUser();
+    window.location.href = "index.html"; 
+    } catch (error) {
+    alert("Error signing out: " + error.message, "danger", "books-table-alert");
+    }
+});
+
+
 
 });
 
