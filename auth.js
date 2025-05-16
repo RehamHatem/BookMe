@@ -18,7 +18,7 @@ import { signInWithGoogle } from "./firebase.js";
 
         
 
-        // Login form submission
+        // Login form 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = loginEmail.value;
@@ -26,7 +26,7 @@ import { signInWithGoogle } from "./firebase.js";
             loginError.textContent = '';
             loginError.classList.remove('show');
 
-            // Client-side validation
+            //  validation
             if (!email || !/\S+@\S+\.\S+/.test(email)) {
                 loginError.textContent = 'Please enter a valid email address.';
                 loginError.classList.add('show');
@@ -41,7 +41,7 @@ import { signInWithGoogle } from "./firebase.js";
         loginUser(email,password);
         });
 
-        // Register form submission
+        // Register form 
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const firstNameVal = firstName.value;
@@ -52,7 +52,7 @@ import { signInWithGoogle } from "./firebase.js";
             registerError.textContent = '';
             registerError.classList.remove('show');
 
-            // Client-side validation
+            //  validation
             if (!firstNameVal || firstNameVal.length < 2) {
                 registerError.textContent = 'First name must be at least 2 characters long.';
                 registerError.classList.add('show');

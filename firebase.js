@@ -4,6 +4,8 @@ import { getFirestore, collection, addDoc ,setDoc, getDoc ,doc } from "https://w
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { GoogleAuthProvider , signInWithPopup } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import {getStorage, ref, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCxY-KJ8H1m-9DO2_fs5qLo9MEwb7PiHVY",
@@ -18,6 +20,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 
 // with email and password 
@@ -43,7 +46,10 @@ export async function loginUser(email, password) {
 try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     alert(" User logged in:"+ userCredential.user.email);
-    window.location.href = "home.html"; 
+    if(userCredential.user.email=="rha772201@gmail.com"){
+      window.location.href = "dashboard.html";   
+    }
+    else window.location.href = "home.html"; 
 } catch (error) {
     alert(" Login failed:"+ error.code+ error.message);
 }
@@ -72,10 +78,50 @@ export async function signInWithGoogle() {
       window.location.href = "index.html"; 
     } else {
       alert(`Welcome back: ${user.displayName}`);
-      window.location.href = "home.html"; 
+      if(user.email=="rha772201@gmail.com"){
+      window.location.href = "dashboard.html";   
+    }
+    else window.location.href = "home.html"; 
     }
 
   } catch (error) {
     alert("Google Sign-In error: " + error.message);
+  }
+}
+
+//===========================================================================
+//insert books
+
+
+
+// export async function addBook(bookData) {
+//   try {
+//     const docRef = await addDoc(collection(db, "books"), bookData);
+//     return { success: true, id: docRef.id };
+//   } catch (error) {
+//     return { success: false, error };
+//   }
+// }
+
+export async function addBook(bookData, imageFile) {
+  try {
+    const docRef = await addDoc(collection(db, "books"), {
+      ...bookData,
+      createdAt: new Date()
+    });
+
+    const imageRef = ref(storage, `bookImages/${docRef.id}_${imageFile.name}`);
+    await uploadBytes(imageRef, imageFile);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    await addDoc(collection(db, "images"), {
+      bookId: docRef.id,
+      imageUrl,
+      uploadedAt: new Date()
+    });
+
+    return { success: true, id: docRef.id, imageUrl };
+  } catch (error) {
+    return { success: false, error };
   }
 }

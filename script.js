@@ -80,3 +80,7 @@ const loginSection = document.getElementById('login-section');
         //     loginError.textContent = 'Password reset link sent! (Simulation)';
         //     loginError.classList.add('show');
         // });
+
+
+
+        
