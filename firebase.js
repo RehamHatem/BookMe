@@ -50,7 +50,7 @@ try {
     if(userCredential.user.email=="rha772201@gmail.com"){
       window.location.href = "dashboard.html";   
     }
-    else window.location.href = "home.html"; 
+    else window.location.href = "product.html"; 
 } catch (error) {
     alert(" Login failed:"+ error.code+ error.message);
 }
@@ -108,7 +108,7 @@ export async function signInWithGoogle() {
       if(user.email=="rha772201@gmail.com"){
       window.location.href = "dashboard.html";   
     }
-    else window.location.href = "home.html"; 
+    else window.location.href = "product.html"; 
     }
 
   } catch (error) {

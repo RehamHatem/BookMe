@@ -136,24 +136,33 @@ addBookForm.addEventListener("submit", async (e) => {
 });
 
 
-//=============================================================
-// get books
+// =====================================================================================================
+// get books table
 async function renderBooksTable() {
     const tableBody = document.getElementById("books-table-body");
     tableBody.innerHTML = "<tr><td colspan='8'>Loading...</td></tr>";
     const result = await getBooks();
     if (!result.success) {
-    tableBody.innerHTML = `<tr><td colspan="8">Error loading books: ${result.error.message}</td></tr>`;
-    return;
+        tableBody.innerHTML = `<tr><td colspan="8">Error loading books: ${result.error.message}</td></tr>`;
+        return;
     }
     if (result.books.length === 0) {
-    tableBody.innerHTML = "<tr><td colspan='8'>No books found.</td></tr>";
-    return;
+        tableBody.innerHTML = `<tr><td colspan='8'>No books found.</td></tr>`;
+        return;
     }
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteBookModal'), { backdrop: 'static', keyboard: false });
+    const books = result.books;
     tableBody.innerHTML = "";
+    books.forEach(book => {
+        const row = createBookRow(book);
+        tableBody.appendChild(row);
+    });
 
-    result.books.forEach(book => {
+    deletEditButtons(books);
+}
+
+// ====================================================================================================
+// create row for each book
+function createBookRow(book) {
     const row = document.createElement("tr");
     const description = book.description.length > 100 
         ? book.description.split(" ").slice(0, 30).join(" ") + '...' 
@@ -168,96 +177,105 @@ async function renderBooksTable() {
         <td>${description}</td>
         <td>${book.imageUrl ? `<img src="${book.imageUrl}" alt="${book.title}" style="max-width: 60px;">` : 'None'}</td>
         <td>
-        <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${book.id}" title="Edit">
-            <i class="bi bi-pencil-square"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${book.id}" data-title="${book.title}" title="Delete">
-            <i class="bi bi-trash"></i>
-        </button>
+            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${book.id}" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${book.id}" data-title="${book.title}" title="Delete">
+                <i class="bi bi-trash"></i>
+            </button>
         </td>
     `;
-    tableBody.appendChild(row);
-    });
-
-//=====================================================================================
-//edit and delete buttons
-    tableBody.addEventListener('click', async (e) => {
-    const target = e.target.closest('button');
-    if (!target) return;
-    const bookId = target.dataset.id;
-
-    if (target.classList.contains('edit-btn')) {
-        const book = result.books.find(b => b.id === bookId);
-        if (book) {
-        document.getElementById('edit-book-id').value = book.id;
-        document.getElementById('edit-book-title').value = book.title;
-        document.getElementById('edit-book-author').value = book.author;
-        document.getElementById('edit-book-category').value = book.category;
-        document.getElementById('edit-book-price').value = book.price;
-        document.getElementById('edit-book-stock').value = book.stock;
-        document.getElementById('edit-book-description').value = book.description;
-
-        const modal = new bootstrap.Modal(document.getElementById('editBookModal'));
-            modal.show();
-    }
-    }
-
-//=========================================================================================
-    //delete
-    else if (target.classList.contains('delete-btn')) {
-        document.getElementById('delete-book-title').textContent = target.dataset.title;
-        document.getElementById('confirm-delete-book').dataset.id = bookId;
-        deleteModal.show();
-    }
-    });
-//delete from firebase
-    document.getElementById('confirm-delete-book').addEventListener('click', async () => {
-    const bookId = document.getElementById('confirm-delete-book').dataset.id;
-    try {
-        await deleteBook(bookId);
-        deleteModal.hide();
-        renderBooksTable();
-        return showAlertTable("Book deleted successfully!", "success", "books-table-alert");
-    } catch (error) {
-        deleteModal.hide();
-        return showAlertTable("Error deleting book: " + error.message, "danger", "books-table-alert");
-    }
-    });
-    document.getElementById('cancel-delete-book').addEventListener('click', async () => {
-        deleteModal.hide();
-    });
-
+    return row;
 }
-// cancel edit
-document.getElementById('edit-cancel').addEventListener('click', async () => {
-    const editModal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
-    editModal.hide();
+
+// ================================================================================================
+// delete edit actions
+function deletEditButtons(books) {
+    const tableBody = document.getElementById("books-table-body");
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteBookModal'), { backdrop: 'static', keyboard: false });
+
+    tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const book = books.find(b => b.id === btn.dataset.id);
+            if (book) editModal(book);
+        });
     });
-// Save changes from edit modal
+    tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('delete-book-title').textContent = btn.dataset.title;
+            document.getElementById('confirm-delete-book').dataset.id = btn.dataset.id;
+            deleteModal.show();
+        });
+    });
+
+    // Confirm delete
+    document.getElementById('confirm-delete-book').onclick = async () => {
+        const bookId = document.getElementById('confirm-delete-book').dataset.id;
+        try {
+            await deleteBook(bookId);
+            deleteModal.hide();
+            await renderBooksTable();
+            showAlertTable("Book deleted successfully!", "success", "books-table-alert");
+        } catch (error) {
+            deleteModal.hide();
+            showAlertTable("Error deleting book: " + error.message, "danger", "books-table-alert");
+        }
+    };
+
+    // Cancel delete
+    document.getElementById('cancel-delete-book').onclick = () => {
+        deleteModal.hide();
+    };
+}
+
+// ========================================================================================================
+// Edit Modal
+function editModal(book) {
+    document.getElementById('edit-book-id').value = book.id;
+    document.getElementById('edit-book-title').value = book.title;
+    document.getElementById('edit-book-author').value = book.author;
+    document.getElementById('edit-book-category').value = book.category;
+    document.getElementById('edit-book-price').value = book.price;
+    document.getElementById('edit-book-stock').value = book.stock;
+    document.getElementById('edit-book-description').value = book.description;
+
+    const modal = new bootstrap.Modal(document.getElementById('editBookModal'), { backdrop: 'static', keyboard: false });
+    modal.show();
+}
+
+// =================================================================================================
+// Cancel Edit
+document.getElementById('edit-cancel').addEventListener('click', () => {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
+    modal.hide();
+});
+
+// ==================================================================================================
+// Save Edited Book
 document.getElementById('save-book-changes').addEventListener('click', async () => {
     const bookId = document.getElementById('edit-book-id').value;
+
     const updatedBook = {
-    title: document.getElementById('edit-book-title').value,
-    author: document.getElementById('edit-book-author').value,
-    category: document.getElementById('edit-book-category').value,
-    price: parseFloat(document.getElementById('edit-book-price').value),
-    stock: parseInt(document.getElementById('edit-book-stock').value),
-    description: document.getElementById('edit-book-description').value
+        title: document.getElementById('edit-book-title').value,
+        author: document.getElementById('edit-book-author').value,
+        category: document.getElementById('edit-book-category').value,
+        price: parseFloat(document.getElementById('edit-book-price').value),
+        stock: parseInt(document.getElementById('edit-book-stock').value),
+        description: document.getElementById('edit-book-description').value
     };
 
     try {
-    await updateBook(bookId, updatedBook);
-    
-    const editModal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
-    editModal.hide();
-    renderBooksTable();
-    return showAlertTable("Book updated successfully!", "success", "books-table-alert");
+        await updateBook(bookId, updatedBook);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
+        modal.hide();
+        await renderBooksTable();
+        showAlertTable("Book updated successfully!", "success", "books-table-alert");
     } catch (error) {
-    return showAlertTable("Error updating book: " + error.message, "danger", "books-table-alert");
+        showAlertTable("Error updating book: " + error.message, "danger", "books-table-alert");
     }
 });
 
-//==================================================================
+//=======================================================================================
 //signout
 document.getElementById("sign-out-btn").addEventListener("click", async (e) => {
     e.preventDefault();
@@ -268,8 +286,6 @@ document.getElementById("sign-out-btn").addEventListener("click", async (e) => {
     alert("Error signing out: " + error.message, "danger", "books-table-alert");
     }
 });
-
-
 
 });
 
