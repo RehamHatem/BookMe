@@ -14,6 +14,7 @@ const alertBox = document.getElementById("alert-box");
 const tablealertBox = document.getElementById("books-table-alert");
 const toggleBtn = document.getElementById("toggleBtn");
 const imageInput = document.getElementById("book-image");
+const imageUrlInput = document.getElementById("book-image-url");
 const previewImg = document.getElementById("preview-img");
 const categorySelect = document.getElementById("book-category");
 
@@ -34,7 +35,7 @@ const showAlertTable = (message, type = "success") => {
     </div>
     `;
 
-     setTimeout(() => {
+    setTimeout(() => {
         tablealertBox.innerHTML = "";
     }, 2000);
 };
@@ -46,21 +47,33 @@ toggleBtn.addEventListener("click", () => {
 
 
 //image
-imageInput.addEventListener("change", () => {
-    const file = imageInput.files[0];
-    if (file && file.type.startsWith("image/")) {
-    const reader = new FileReader();
-    reader.onload = () => {
-        previewImg.src = reader.result;
-        previewImg.style.display = "block";
-    };
-    reader.readAsDataURL(file);
+
+
+// imageInput.addEventListener("change", () => {
+//     const file = imageInput.files[0];
+//     if (file && file.type.startsWith("image/")) {
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//         previewImg.src = reader.result;
+//         previewImg.style.display = "block";
+//     };
+//     reader.readAsDataURL(file);
+//     } else {
+//     previewImg.src = "";
+//     previewImg.style.display = "none";
+//     }
+// });
+
+imageUrlInput.addEventListener("input", () => {
+    const url = imageUrlInput.value.trim();
+    if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+    previewImg.src = url;
+    previewImg.style.display = "block";
     } else {
     previewImg.src = "";
     previewImg.style.display = "none";
     }
 });
-
 //=======================================================================================
 
     const insertSection = document.getElementById("insert-section");
@@ -102,7 +115,8 @@ addBookForm.addEventListener("submit", async (e) => {
     const stock = parseInt(document.getElementById("book-stock").value);
     const description = document.getElementById("book-description").value.trim();
     const category = categorySelect.value;
-    const imageFile = imageInput.files[0];
+    // const imageFile = imageInput.files[0];
+    const imageUrl = document.getElementById("book-image-url").value;
     const timestamp = Date.now();
     const bookId = `${title.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
 
@@ -113,7 +127,11 @@ addBookForm.addEventListener("submit", async (e) => {
     if (isNaN(stock) || stock < 0) return showAlert("Stock must be a valid positive number.", "danger");
     if (!description || description.length < 10) return showAlert("Description must be at least 10 characters.", "danger");
     if (!category) return showAlert("Please select a book category.", "danger");
-    if (!imageFile || !imageFile.type.startsWith("image/")) return showAlert("Please select a valid image file.", "danger");
+    // if (!imageFile || !imageFile.type.startsWith("image/")) return showAlert("Please select a valid image file.", "danger");
+    if (!imageUrl || !(imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
+    return showAlert("Please enter a valid image URL starting with http:// or https://", "danger");
+    }
+    
 
 // book data
     const bookData = {
@@ -123,7 +141,8 @@ addBookForm.addEventListener("submit", async (e) => {
     category,
     price,
     stock,
-    description
+    description,
+    imageUrl
     };
 
     //add to Firebase
@@ -234,6 +253,20 @@ function deletEditButtons(books) {
 
 // ========================================================================================================
 // Edit Modal
+
+const editImageUrlInput = document.getElementById("edit-book-image-url");
+const editPreviewImg = document.getElementById("edit-preview-img");
+
+editImageUrlInput.addEventListener("input", () => {
+const url = editImageUrlInput.value.trim();
+if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+    editPreviewImg.src = url;
+    editPreviewImg.style.display = "block";
+} else {
+    editPreviewImg.src = "";
+    editPreviewImg.style.display = "none";
+}
+});
 function editModal(book) {
     document.getElementById('edit-book-id').value = book.id;
     document.getElementById('edit-book-title').value = book.title;
@@ -242,18 +275,29 @@ function editModal(book) {
     document.getElementById('edit-book-price').value = book.price;
     document.getElementById('edit-book-stock').value = book.stock;
     document.getElementById('edit-book-description').value = book.description;
+    document.getElementById('edit-book-image-url').value = book.imageUrl || "";
 
+    if (book.imageUrl) {
+    editPreviewImg.src = book.imageUrl;
+    editPreviewImg.style.display = "block";
+} else {
+    editPreviewImg.src = "";
+    editPreviewImg.style.display = "none";
+}
     const modal = new bootstrap.Modal(document.getElementById('editBookModal'), { backdrop: 'static', keyboard: false });
     modal.show();
 }
 
+
+
 // =================================================================================================
 // Cancel Edit
-
 document.getElementById('edit-cancel').addEventListener('click', () => {
     const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
     modal.hide();
 });
+
+
 
 // ==================================================================================================
 // Save Edited Book
@@ -266,7 +310,8 @@ document.getElementById('save-book-changes').addEventListener('click', async () 
         category: document.getElementById('edit-book-category').value,
         price: parseFloat(document.getElementById('edit-book-price').value),
         stock: parseInt(document.getElementById('edit-book-stock').value),
-        description: document.getElementById('edit-book-description').value
+        description: document.getElementById('edit-book-description').value,
+        imageUrl: document.getElementById('edit-book-image-url').value.trim()
     };
 
     try {

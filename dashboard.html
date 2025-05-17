@@ -221,11 +221,22 @@
         <label for="book-title">Title</label>
         <input type="text" class="form-control" id="book-title" required>
       </div>
-      <label for="book-image">Book Image</label>
+      <!-- <label for="book-image">Book Image</label>
     <input type="file" class="form-control" id="book-image" accept="image/*" required>
     <div id="image-preview" style="margin-top: 10px;">
         <img id="preview-img" src="" alt="Preview" style="max-height: 150px; display: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    </div> -->
+
+    <div class="form-group mb-3">
+    <label for="book-image-url">Book Image URL</label>
+    <input type="url" class="form-control" id="book-image-url" placeholder="https://example.com/image.jpg" required>
     </div>
+
+    <div id="image-preview" style="margin-top: 10px;">
+    <img id="preview-img" src="" alt="Preview" style="max-height: 150px; display: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  </div>
+
+
       <div class="form-group mb-3">
         <label for="book-author">Author</label>
         <input type="text" class="form-control" id="book-author" required>
@@ -316,6 +327,16 @@
           <label for="edit-book-title" class="form-label">Title</label>
           <input type="text" class="form-control" id="edit-book-title" required>
         </div>
+
+
+        <div class="mb-3">
+     <label for="edit-book-image-url" class="form-label">Image URL</label>
+       <input type="url" class="form-control" id="edit-book-image-url"  required>
+    </div>
+
+    <div id="edit-image-preview" style="margin-top: 10px; text-align: center;">
+    <img id="edit-preview-img" src="" alt="Preview" style="max-height: 150px; display: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    </div>
 
         <div class="mb-3">
           <label for="edit-book-author" class="form-label">Author</label>
