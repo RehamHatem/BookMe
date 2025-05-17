@@ -59,8 +59,8 @@
     .content {
       margin-left: 250px;
       padding: 20px;
-      background: rgba(255, 245, 238, 0.9);
-      border-radius: 10px;
+      background:  #f8f4ee;
+      /* border-radius: 10px; */
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
       min-height: 100vh;
@@ -75,13 +75,13 @@
 
     .form-title {
       font-family: Georgia, serif;
-      color: #4a2c0b;
+      color: #8b4513;
       font-weight: bold;
       margin-bottom: 20px;
     }
 
     .form-control {
-      background: #fffaf0;
+      background:#e0e6e0 ;
       border: 1px solid #d2b48c;
       border-radius: 5px;
     }
@@ -190,6 +190,53 @@
         border-radius: 5px;
       }
     }
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #657C6A;
+  color: white;
+  transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
   </style>
 </head>
 <body>
@@ -212,7 +259,7 @@
   <div class="content" id="content">
 
 
-     <!-- insert book -->
+    <!-- insert book -->
       <div id="insert-section" class="content-section">
     <h2 class="form-title" >Insert Book</h2>
     <div id="alert-box"></div>
