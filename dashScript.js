@@ -33,6 +33,10 @@ const showAlertTable = (message, type = "success") => {
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     `;
+
+     setTimeout(() => {
+        tablealertBox.innerHTML = "";
+    }, 2000);
 };
 
 window.addEventListener("load", () => content.classList.add("loaded"));
@@ -245,6 +249,7 @@ function editModal(book) {
 
 // =================================================================================================
 // Cancel Edit
+
 document.getElementById('edit-cancel').addEventListener('click', () => {
     const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
     modal.hide();
